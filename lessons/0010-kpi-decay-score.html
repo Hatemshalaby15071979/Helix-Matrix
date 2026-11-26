@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Lesson 0010 — KPI-decay score</title><link rel="stylesheet" href="/assets/css/base.css"></head><body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Lesson 0010 — KPI-decay score</h1>
+<p class="ref">Primary source: Helix CX Churn Sentinel + your RTA Command Center 5-stage pipeline.</p>
+<h2>Why this lesson</h2>
+<p>A single KPI snapshot (CSAT 82%) is a photograph. A KPI-decay score is a video: it tracks how a metric trends over time and turns "drifting but still green" into an early-warning signal before SLA breach.</p>
+<h2>Concept</h2>
+<ul>
+  <li><b>Decay:</b> a metric's distance from target, weighted by recency and rate of change.</li>
+  <li><b>Threshold bands:</b> green / amber / red, loaded from config (not hardcoded) — single source of truth.</li>
+  <li><b>Pipeline:</b> raw KPI → normalise → weight → decay → classify → route to action.</li>
+  <li><b>Honest about limits:</b> a heuristic scorer with configurable thresholds is not a prediction; label it.</li>
+</ul>
+<p class="note">RTA Command Center: five-stage KPI pipeline turning CX KPIs into an account-risk signal, later absorbed into Helix's RTA engine. Helix's CX risk scorer loads <code>kpi_weights</code>/<code>kpi_thresholds</code>/<code>risk_bands</code> from <code>config/risk_thresholds.yaml</code> (was hardcoded — fixed).</p>
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">KPI-decay pattern</th></tr>
+<tr><td style="padding:.3rem">CSAT 82% today, was 91% last month</td><td style="padding:.3rem">Decay score rises even while still "green"</td></tr>
+<tr><td style="padding:.3rem">ICU/APU triggers from KPI trends, not single snapshots</td><td style="padding:.3rem">Threshold bands route to escalation automatically</td></tr>
+<tr><td style="padding:.3rem">Risk bands tuned per campaign</td><td style="padding:.3rem">Config file, not code constants</td></tr>
+</table>
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <p class="q">1. A KPI is 90% of target and flat. Decay score is…</p>
+  <button onclick="ans('q1',1,false)">A) Maximum — it's below target</button>
+  <button onclick="ans('q1',1,true)">B) Low — flat near target means low decay</button>
+  <button onclick="ans('q1',1,false)">C) Zero — only breaches count</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. Where should risk threshold bands live?</p>
+  <button onclick="ans('q2',2,false)">A) Hardcoded in the scorer</button>
+  <button onclick="ans('q2',2,true)">B) In a config file (single source of truth), loaded at runtime</button>
+  <button onclick="ans('q2',2,false)">C) In the database per user</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. A heuristic risk scorer should be described as…</p>
+  <button onclick="ans('q3',3,false)">A) "AI prediction of churn"</button>
+  <button onclick="ans('q3',3,true)">B) "Weighted heuristic with configurable thresholds — honest about its limits"</button>
+  <button onclick="ans('q3',3,false)">C) "Guaranteed accurate"</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+<script>function ans(q,n,c){const f=document.getElementById(q+'f');f.innerHTML=c?'<span class="correct">Correct.</span>':'<span class="wrong">Not quite — re-read above.</span>';}</script>
+<h2>Primary source</h2>
+<p>Helix <code>engines/cx/src/risk_scorer.py</code> + <code>config/risk_thresholds.yaml</code>. RTA Command Center README (5-stage pipeline).</p>
+<h2>Homework (5 min)</h2>
+<p>Pick one KPI you track (CSAT, adherence, FCR). Define green/amber/red bands and the trend window. Note one case where a flat "green" hid a problem.</p>
+<footer>Lesson 0010 · <a href="../MISSION.md">Mission</a> · Next: 0011 local-first AI.</footer>
+</body></html>

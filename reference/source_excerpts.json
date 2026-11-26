@@ -1,0 +1,29 @@
+{
+  "label": "Local source notes — curated from the cited primary source, not verbatim quotations. Follow the link to verify the exact wording.",
+  "lessons": {
+    "0001": { "source": "OWASP — Fail Open vs Fail Closed", "url": "https://owasp.org/www-community/Fail_Open_vs_Fail_Closed", "note": "Fail-closed means a missing or unauthorised input leads to refusal, not a permissive default." },
+    "0002": { "source": "Martin Fowler — Event Sourcing", "url": "https://martinfowler.com/eaaDev/EventSourcing.html", "note": "State is the projection of an immutable event sequence; the events, not a mutable row, are the record." },
+    "0003": { "source": "NIST SP 800-162 — RBAC", "url": "https://csrc.nist.gov/publications/detail/sp/800-162/final", "note": "Permissions attach to roles and access is denied unless a role explicitly grants it." },
+    "0004": { "source": "NIST SP 800-162 — least privilege", "url": "https://csrc.nist.gov/publications/detail/sp/800-162/final", "note": "A subject sees only the tenant data and operations its role and scope permit." },
+    "0005": { "source": "OWASP Secrets Management Cheat Sheet", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html", "note": "Secrets belong in a managed store with rotation and access control, never in source or plaintext config." },
+    "0006": { "source": "Martin Fowler — Event Sourcing (append-only)", "url": "https://martinfowler.com/eaaDev/EventSourcing.html", "note": "An append-only log with chained hashes makes a tampered record detectable by replay." },
+    "0007": { "source": "W3C Trace Context", "url": "https://www.w3.org/TR/trace-context/", "note": "A trace id and parent id propagate across service calls so one operation can be reconstructed." },
+    "0008": { "source": "Enterprise Integration Patterns — Dead Letter Channel", "url": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html", "note": "Messages that cannot be delivered are routed to a dead-letter channel instead of being silently dropped." },
+    "0009": { "source": "Lewis et al. 2020 — RAG (arXiv 2005.11401)", "url": "https://arxiv.org/abs/2005.11401", "note": "Retrieve relevant passages first, then condition generation on them; low confidence should escalate." },
+    "0010": { "source": "Practitioner knowledge — KPI decay", "url": "", "note": "No canonical primary source recorded. A weighted multi-KPI score is a local design choice, not a standard." },
+    "0011": { "source": "localfirstweb.dev", "url": "https://localfirstweb.dev/", "note": "Local-first keeps the working state on the user's device; the network enhances rather than owns it." },
+    "0012": { "source": "Erlang C formula reference", "url": "https://www.callcentre-helper.com/erlang_c_formula.htm", "note": "Erlang C gives the probability a call waits, from offered load and agent count." },
+    "0013": { "source": "Erlang B formula (loss systems)", "url": "https://www.callcentre-helper.com/erlang_c_formula.htm", "note": "Erlang B gives blocking probability where there is no queue — lost calls, not waiting calls." },
+    "0014": { "source": "Contact-centre service level practice", "url": "https://www.callcentre-helper.com/erlang_c_formula.htm", "note": "Service level is the share of contacts answered within a threshold such as 80% in 20 seconds." },
+    "0015": { "source": "Practitioner knowledge — shrinkage and FTE", "url": "", "note": "No canonical source recorded. FTE = required agents / (1 − shrinkage); the definition of shrinkage is local." },
+    "0016": { "source": "Practitioner knowledge — adherence, RTA, occupancy", "url": "", "note": "No canonical source recorded. Adherence compares actual to scheduled interval behaviour; occupancy is handle time over available time." },
+    "0017": { "source": "Practitioner knowledge — ICU/APU and the floor walker", "url": "", "note": "Known gap: no peer-reviewed source found during setup. Treat as practitioner practice, not a standard." },
+    "0018": { "source": "Contact-centre KPI definitions", "url": "", "note": "CSAT measures perceived experience, FCR resolution without repeat contact, SLA/SL access speed. Practitioner definitions." },
+    "0019": { "source": "FastAPI and Pydantic documentation", "url": "https://fastapi.tiangolo.com/", "note": "Pydantic models validate at the boundary; FastAPI derives request handling and docs from those typed models." },
+    "0020": { "source": "Streamlit documentation", "url": "https://docs.streamlit.io/", "note": "Streamlit reruns the script on interaction, so state that must persist has to be stored explicitly." },
+    "0021": { "source": "Pandas / PostgreSQL / Parquet documentation", "url": "https://pandas.pydata.org/docs/", "note": "Columnar Parquet for analytics, Postgres for transactional truth, Pandas for in-memory transforms." },
+    "0022": { "source": "Docker Compose docs + CIS Docker Benchmark", "url": "https://docs.docker.com/compose/", "note": "Compose defines local multi-container systems; hardening means non-root users, read-only mounts and no privileged mode." },
+    "0023": { "source": "CycloneDX / Trivy / GitHub Actions docs", "url": "https://cyclonedx.org/", "note": "An SBOM lists what shipped; scanning fails the build on known vulnerabilities before release." },
+    "0024": { "source": "Ollama / Piper TTS / Plotly / Tauri docs", "url": "https://ollama.com/", "note": "Local inference and local TTS keep prompts and audio on-device; the trade-off is hardware cost." }
+  }
+}

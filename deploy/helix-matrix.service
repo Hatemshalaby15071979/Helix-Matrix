@@ -1,0 +1,16 @@
+[Unit]
+Description=Helix-Matrix — local operations & AI portfolio matrix (loopback only)
+After=network.target
+
+[Service]
+# Point both lines at your checkout before enabling:
+WorkingDirectory=/path/to/helix-matrix
+ExecStart=/usr/bin/python3 /path/to/helix-matrix/server/os_server.py
+Restart=on-failure
+RestartSec=3
+
+# Keep the personal learning state with the checkout.
+SupplementaryGroups=
+
+[Install]
+WantedBy=default.target

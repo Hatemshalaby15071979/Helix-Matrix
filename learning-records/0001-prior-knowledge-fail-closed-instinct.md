@@ -1,0 +1,6 @@
+# User already operates fail-closed by instinct; gap is formal vocabulary and design justification
+
+The user has 28 years of contact-centre/WFM/CX ops experience and runs a fail-closed operation in practice (missing KPI data → hold the plan, unknown agent performance → ICU, not promotion). What is missing is the engineering vocabulary (deny-by-default, dead_letter, oversight_only) and the ability to justify the design (why record the refusal before execution, cost asymmetry of false positives vs false negatives). Future lessons should map new software concepts onto known ops concepts rather than teach from scratch, and should not re-teach the ops side.
+
+- **Evidence:** Mission statement ("28 years... want the AI/software side to match ops depth") plus the operating principle quoted in the portfolio ("on missing input or missing authority, the system refuses rather than guesses").
+- **Implications:** Start AI/software lessons at the architecture layer (gates, event sourcing, RAG confidence) rather than ops basics; use Helix Codex as the worked example since the user owns it.

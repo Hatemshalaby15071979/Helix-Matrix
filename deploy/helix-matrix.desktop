@@ -1,0 +1,11 @@
+[Desktop]
+Type=Application
+Name=Helix-Matrix
+Comment=Operations & AI Portfolio Reference Matrix (local, offline)
+# Point Path and Exec at your checkout before installing:
+Path=/path/to/helix-matrix
+Exec=/path/to/helix-matrix/scripts/launch.sh
+Terminal=false
+Icon=utilities-system-monitor
+Categories=Utility;
+StartupNotify=false

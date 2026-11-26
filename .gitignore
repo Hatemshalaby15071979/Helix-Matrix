@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local runtime state (answers, quiz attempts, term grades, day state).
+# These are personal data and are never published.
+learning-records/day-os/
+learning-records/quiz.json
+learning-records/terms.json
+learning-records/weekly/
+learning-records/day-notes/
+learning-records/metacognition/decisions.json
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reference — Glossary</title>
+<link rel="stylesheet" href="/assets/css/base.css">
+</head>
+<body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Glossary</h1>
+<p class="ref">Compressed units of learning. Grows with each lesson.</p>
+
+<h2>A</h2>
+<dl>
+  <dt><b>awaiting_approval</b></dt><dd>Gate verdict: submission held because cost exceeds the acting role's approval limit; not executed.</dd>
+  <dt><b>audit ledger (hash-chained)</b></dt><dd>Append-only record where each entry's hash includes the previous entry's hash, so tampering breaks the chain.</dd>
+</dl>
+<h2>D</h2>
+<dl>
+  <dt><b>dead_letter</b></dt><dd>Gate verdict: submission refused outright (unknown role, forbidden classification, non-owned engine, oversight-only seat). Engine not called.</dd>
+  <dt><b>deny by default</b></dt><dd>RBAC posture where any permission/classification not explicitly granted is treated as denied.</dd>
+</dl>
+<h2>E</h2>
+<dl>
+  <dt><b>event sourcing</b></dt><dd>Persisting state as a sequence of immutable events; current state is a projection. (Lesson 0002.)</dd>
+  <dt><b>executing</b></dt><dd>Gate verdict: submission authorised and dispatched to the owning engine.</dd>
+</dl>
+<h2>F</h2>
+<dl>
+  <dt><b>fail-closed</b></dt><dd>On missing input or missing authority, refuse to act rather than proceed with a permissive default.</dd>
+  <dt><b>fail-open</b></dt><dd>On missing input/authority, proceed with a permissive default — faster, usually wrong in safety-critical paths.</dd>
+</dl>
+<h2>O</h2>
+<dl>
+  <dt><b>oversight_only</b></dt><dd>Role seat that proposes/reviews but never executes an engine; hard-denied regardless of target_engine.</dd>
+</dl>
+<h2>R</h2>
+<dl>
+  <dt><b>RBAC (role-based access control)</b></dt><dd>Permissions attached to roles, not users; defaults to deny.</dd>
+  <dt><b>RoleSpec matrix</b></dt><dd>Helix's table mapping role → engines owned, classifications readable, financial limit, KPIs, oversight flag.</dd>
+</dl>
+
+<h2>R (continued)</h2>
+<dl>
+  <dt><b>RAG (Retrieval-Augmented Generation)</b></dt><dd>Retrieve relevant passages from a corpus, then generate an answer conditioned on them. Confidence gate escalates on low margin.</dd>
+</dl>
+<h2>S</h2>
+<dl>
+  <dt><b>Service Level (SL)</b></dt><dd>Probability a contact is answered within the target time (e.g. 80% in 20s).</dd>
+  <dt><b>Shrinkage</b></dt><dd>% of paid time an agent is unavailable for contact handling (breaks, training, absence). FTE = agents / (1 − shrinkage).</dd>
+  <dt><b>Streamlit</b></dt><dd>Python framework turning a script into a web app via rerun-on-interaction; state in st.session_state.</dd>
+</dl>
+<h2>T</h2>
+<dl>
+  <dt><b>Tenant isolation</b></dt><dd>Guarantee that one tenant's data/actions/failures never leak into another's; enforced in the data layer.</dd>
+  <dt><b>Trivy</b></dt><dd>Vulnerability scanner for container images, filesystems and IaC.</dd>
+</dl>
+<h2>W</h2>
+<dl>
+  <dt><b>WFM (Workforce Management)</b></dt><dd>Forecasting, scheduling, adherence, RTA, performance management for contact centres.</dd>
+</dl>
+
+<footer>
+Reference — Glossary · <a href="../MISSION.md">Mission</a> · <a href="../lessons/0001-fail-closed-gates.html">Lesson 0001</a>
+</footer>
+</body>
+</html>

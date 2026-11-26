@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Lesson 0009 — RAG confidence gate</title><link rel="stylesheet" href="/assets/css/base.css"></head><body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Lesson 0009 — RAG confidence gate</h1>
+<p class="ref">Primary source: <a href="https://arxiv.org/abs/2005.11401">Lewis et al. 2020 — Retrieval-Augmented Generation</a> + your LIVE Support Assistant design.</p>
+<h2>Why this lesson</h2>
+<p>RAG (retrieve context, then generate) is the standard way to make an LLM answer from a private corpus. The danger is overconfidence: a slightly-relevant passage becomes a hallucinated answer. A confidence gate refuses or escalates when the best retrieval is not decisively better than the runner-up.</p>
+<h2>Concept</h2>
+<ul>
+  <li><b>Retrieval:</b> find top-k passages by similarity (cosine/inner product over embeddings).</li>
+  <li><b>Margin:</b> gap between best and second-best similarity. Small margin → ambiguous → don't answer.</li>
+  <li><b>Confidence gate:</b> if margin &lt; threshold (or best score &lt; floor), escalate to human / refuse.</li>
+  <li><b>Refusal is a feature:</b> "I don't know" beats a confident wrong answer.</li>
+  <li><b>Corpus integrity:</b> refuse to publish a self-contradictory corpus; 10 verification checks gate escalation behaviour.</li>
+</ul>
+<p class="note">LIVE Support Assistant: at 48 procedures, in-scope recall 27.8% (84/302) at margin 0.18; 6 of 52 out-of-scope questions answered at margin 0.18; deployed 39-ticket parity run found 6 unsafe at margins 0.1869–0.4175. The gate is the honest part.</p>
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">RAG gate pattern</th></tr>
+<tr><td style="padding:.3rem">Agent unsure → escalate to TL, don't guess</td><td style="padding:.3rem">Low margin → escalate to human</td></tr>
+<tr><td style="padding:.3rem">Two SOPs conflict → hold, don't answer</td><td style="padding:.3rem">Self-contradictory corpus refused at publish</td></tr>
+<tr><td style="padding:.3rem">QA reviews low-confidence answers</td><td style="padding:.3rem">Gate thresholds are tunable and logged</td></tr>
+</table>
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <p class="q">1. A retrieval returns best=0.71, second=0.69 (margin 0.02). Gate threshold 0.18. Action?</p>
+  <button onclick="ans('q1',1,true)">A) Escalate/refuse — margin below threshold</button>
+  <button onclick="ans('q1',1,false)">B) Answer — best score is high</button>
+  <button onclick="ans('q1',1,false)">C) Answer with a disclaimer</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. Why measure margin, not just top score?</p>
+  <button onclick="ans('q2',2,false)">A) Margin is cheaper to compute</button>
+  <button onclick="ans('q2',2,true)">B) A high top score with a close runner-up means ambiguity; margin captures it</button>
+  <button onclick="ans('q2',2,false)">C) Top score is always wrong</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. Publishing a corpus that contradicts itself should…</p>
+  <button onclick="ans('q3',3,false)">A) Be allowed — the model will figure it out</button>
+  <button onclick="ans('q3',3,true)">B) Be refused at publish time (422) — no self-contradictory corpus</button>
+  <button onclick="ans('q3',3,false)">C) Be silently deduplicated</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+<script>function ans(q,n,c){const f=document.getElementById(q+'f');f.innerHTML=c?'<span class="correct">Correct.</span>':'<span class="wrong">Not quite — re-read above.</span>';}</script>
+<h2>Primary source</h2>
+<p><a href="https://arxiv.org/abs/2005.11401">Lewis et al. 2020 — RAG</a>. Then LIVE Support Assistant README + 39-ticket parity run notes.</p>
+<h2>Homework (5 min)</h2>
+<p>Take a RAG you've used (or design one). Pick a margin threshold and write the escalation message a human would see. Note one case where a high top-score but low margin would be dangerous.</p>
+<footer>Lesson 0009 · <a href="../MISSION.md">Mission</a> · Next: 0010 KPI-decay score.</footer>
+</body></html>

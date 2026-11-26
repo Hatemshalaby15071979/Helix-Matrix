@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pytest
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Run the day-engine test suite
+        run: python -m pytest tests/ -q
+
+      - name: Byte-compile the server
+        run: python -m py_compile server/os_server.py server/os_engine.py
+
+      - name: Syntax-check the client JavaScript
+        run: |
+          for f in assets/js/*.js; do node --check "$f"; done
+
+      - name: Validate JSON data files
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          for p in sorted(pathlib.Path("data").glob("*.json")):
+              json.loads(p.read_text(encoding="utf-8"))
+              print(f"ok: {p}")
+          PY
+
+      - name: Confirm version strings agree
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          # The server header carries the major.minor version (e.g. "1.0" from "1.0.0").
+          SHORT="${VERSION%.*}"
+          grep -q "HelixMatrix/\${SHORT}" server/os_server.py \
+            || { echo "Server header version does not match VERSION ($VERSION)"; exit 1; }
+          echo "version consistent: $SHORT (from $VERSION)"

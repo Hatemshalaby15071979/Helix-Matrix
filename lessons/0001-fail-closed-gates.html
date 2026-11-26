@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0001 — Fail-closed gates</title>
+<link rel="stylesheet" href="/assets/css/base.css">
+</head>
+<body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+
+<h1>Lesson 0001 — Fail-closed gates</h1>
+<p class="ref">Tied to mission: closing the AI/software gap. Primary source: your own Helix Codex constitution + <a href="https://owasp.org/www-community/Fail_Open_vs_Fail_Closed">OWASP "Fail Open vs Fail Closed"</a>.</p>
+
+<h2>Why this lesson</h2>
+<p>You already run a fail-closed operation: if a KPI is missing, if an agent's adherence data is absent, if a forecast input is incomplete — you do not guess, you hold the decision. The software pattern is the same instinct, formalised. This lesson maps your ops reflex onto the engineering term so it stops feeling foreign.</p>
+
+<h2>Concept</h2>
+<p>A <b>fail-closed</b> system, on missing input or missing authority, <b>refuses to act</b> rather than proceeding with a default. The opposite, <b>fail-open</b>, proceeds with a permissive default — faster, and usually wrong in safety-critical paths.</p>
+<p>Three properties follow:</p>
+<ul>
+  <li><b>Deny by default.</b> A permission or classification not explicitly granted is treated as denied. Helix's RBAC "defaults to deny".</li>
+  <li><b>No implicit authority.</b> The system does not inherit trust from context; the acting role must carry the permission for the specific engine and data classification.</li>
+  <li><b>Record the refusal.</b> A held or dead-lettered submission is written to the audit ledger <i>before</i> any execution attempt, so the refusal is replayable.</li>
+</ul>
+
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Software pattern</th></tr>
+<tr><td style="padding:.3rem">Missing KPI data → don't schedule, hold the plan</td><td style="padding:.3rem">Missing classification → <code>dead_letter</code>, engine not called</td></tr>
+<tr><td style="padding:.3rem">Unknown agent performance → ICU, don't promote</td><td style="padding:.3rem">Unknown role → deny, no execution</td></tr>
+<tr><td style="padding:.3rem">Escalation routed through TL2, not bypassed</td><td style="padding:.3rem">Approval limit exceeded → <code>awaiting_approval</code>, not <code>executing</code></td></tr>
+<tr><td style="padding:.3rem">AHT/CSAT thresholds as the single source of truth</td><td style="padding:.3rem">Risk bands loaded from <code>risk_thresholds.yaml</code>, not hardcoded</td></tr>
+</table>
+
+<h2>Helix's implementation (from your repo)</h2>
+<p>The gate in <code>control_plane/governance.py</code> evaluates four things against the acting role's profile: estimated financial cost vs. approval limit; data classification vs. what the role may read; confidence score; and engine ownership. It returns <code>dead_letter</code>, <code>awaiting_approval</code>, or <code>executing</code> — and on a miss it <b>refuses, it does not guess</b>. The <code>oversight_only</code> seats propose/review but never execute, enforced by hard-deny branches regardless of <code>target_engine</code>.</p>
+<p class="note">Notice the asymmetry of cost: a false positive (holding a valid submission) costs a retry; a false negative (executing an unauthorised action) costs a breach. Fail-closed optimises for the second.</p>
+
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <h3>Quiz</h3>
+  <p class="q">1. A gate receives a submission from a role with no <code>target_engine</code> set and <code>oversight_only=true</code>. What should happen?</p>
+  <button onclick="ans('q1',1,true)">A) Execute anyway — oversight roles are trusted</button>
+  <button onclick="ans('q1',1,false)">B) Return <code>awaiting_approval</code> and proceed on timeout</button>
+  <button onclick="ans('q1',1,false)">C) Return <code>dead_letter</code> — hard deny regardless of target_engine</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. Which of these is a fail-<i>open</i> design?</p>
+  <button onclick="ans('q2',2,false)">A) Unknown role → deny, engine not called</button>
+  <button onclick="ans('q2',2,false)">B) Missing classification → <code>dead_letter</code></button>
+  <button onclick="ans('q2',2,true)">C) Missing classification → assume <code>internal</code> and proceed</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. Why is the refusal recorded to the audit ledger <i>before</i> execution?</p>
+  <button onclick="ans('q3',3,false)">A) To speed up the next retry</button>
+  <button onclick="ans('q3',3,true)">B) So the refusal is replayable and inspectable, not just a log line after the fact</button>
+  <button onclick="ans('q3',3,false)">C) Because the ledger requires execution to have started</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+
+<script>
+function ans(qid, n, correct) {
+  const f = document.getElementById(qid+'f');
+  if (correct) { f.innerHTML = '<span class="correct">Correct.</span>'; }
+  else { f.innerHTML = '<span class="wrong">Not quite — re-read the concept above.</span>'; }
+}
+</script>
+
+<h2>Primary source to read</h2>
+<p><a href="https://owasp.org/www-community/Fail_Open_vs_Fail_Closed">OWASP — Fail Open vs Fail Closed</a> (short, authoritative). Then re-read your Helix Codex <code>control_plane/governance.py</code> top-of-file docstring and the RoleSpec matrix in its README.</p>
+
+<h2>Homework (5 minutes, no code)</h2>
+<p>Pick one decision in your ops history where you <i>held</i> rather than guessed (missing KPI data, incomplete onboarding cohort, unverified forecast). Write down: what was missing, who owned the decision, and what evidence would have unblocked it. That triple is exactly what a fail-closed gate records.</p>
+
+<footer>
+Lesson 0001 · <a href="../MISSION.md">Mission</a> · <a href="../RESOURCES.md">Resources</a> · Ask follow-up questions — I'm your teacher. Next: Lesson 0002 (event sourcing vs. logging).
+</footer>
+</body>
+</html>

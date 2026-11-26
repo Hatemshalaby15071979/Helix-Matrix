@@ -1,0 +1,232 @@
+{
+  "title": "Sami's metacognitive memory — Helix-Matrix (Operations & AI Portfolio Reference Matrix)",
+  "updated": "2026-11-26",
+  "identity": {
+    "name": "Sami",
+    "role": "Companion and metacognitive mirror for Hatem's education-and-career cockpit. Not a coding agent inside this app: I locate, explain, recommend and remember — I do not edit files from here.",
+    "voice": "Spoken answers are on by default. Use the mic to talk; use the speaker toggle to turn my voice off."
+  },
+  "appIndex": [
+    {
+      "id": "day-os",
+      "label": "Today · control room",
+      "detail": "Prayer-window task spine, focus card, week strip, quick capture and day streak."
+    },
+    {
+      "id": "control-panel",
+      "label": "Domain filter & search",
+      "detail": "Five domains filter both the matrix rows and the lesson list."
+    },
+    {
+      "id": "matrix-heading",
+      "label": "Problem → tool matrix",
+      "detail": "20 mapped systems with definitions, evidence and fail-closed mechanics."
+    },
+    {
+      "id": "topology-heading",
+      "label": "Floor symptom topology",
+      "detail": "Contact-centre symptom → gate → project lineage."
+    },
+    {
+      "id": "evidence-heading",
+      "label": "Test coverage & glossary",
+      "detail": "12 governance/WFM/safety terms and verified test-depth evidence."
+    },
+    {
+      "id": "lineage-heading",
+      "label": "Floor friction lineage",
+      "detail": "Why the codebase was shaped by 28 years of operations."
+    },
+    {
+      "id": "german",
+      "label": "German v5 · learning track",
+      "detail": "12 pilot listening lessons A1–C2, linked from the day's task, with its own app glossary."
+    },
+    {
+      "id": "portable",
+      "label": "Portable history",
+      "detail": "Export and import answers, quiz results, grades, reviews and decisions as plain JSON."
+    },
+    {
+      "id": "monthly",
+      "label": "Monthly trend",
+      "detail": "Weekly reviews rolled into one line per month."
+    }
+  ],
+  "files": [
+    {
+      "path": "app/index.html",
+      "what": "This app — the Helix-Matrix portfolio matrix with the day OS shell."
+    },
+    {
+      "path": "AGENTS.md",
+      "what": "The repo charter and append-only sign-in/out ledger."
+    },
+    {
+      "path": "MISSION.md",
+      "what": "Close the AI/software-architecture gap to match 28 years of ops depth."
+    },
+    {
+      "path": "NOTES.md",
+      "what": "Teaching constraints and the skill map."
+    },
+    {
+      "path": "RESOURCES.md",
+      "what": "Primary sources behind the lessons."
+    },
+    {
+      "path": "lessons/INDEX.md",
+      "what": "All 24 lessons, grouped by domain."
+    },
+    {
+      "path": "reference/glossary.html",
+      "what": "The 12-term governance/WFM/safety glossary."
+    },
+    {
+      "path": "learning-records/",
+      "what": "Your written answers — the source of truth for what is done."
+    },
+    {
+      "path": "server/os_engine.py",
+      "what": "Prayer maths, task generation, domain map, answer records."
+    },
+    {
+      "path": "server/os_server.py",
+      "what": "The local server behind http://127.0.0.1:8765/."
+    },
+    {
+      "path": "data/metacognition.json",
+      "what": "This memory — my read of the app and my recommendations."
+    },
+    {
+      "path": "render_repo_readmes.py",
+      "what": "Regenerates the portfolio PDF snapshots."
+    },
+    {
+      "path": "projects/remotely-active/",
+      "what": "Project status files the day OS reads for the project task."
+    },
+    {
+      "path": "projects/remotely-active/Mannschaft/content/lessons/",
+      "what": "The 12 German pilot lesson scripts (A1-01 … C2-02), read-only."
+    },
+    {
+      "path": "../n8n-production-repo.tar",
+      "what": "Archive of the n8n Production Starter repository (no remote yet)."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Helix-Codex",
+      "note": "Six-engine governed core, nine role seats, 2,107 tests, nine production gates red by design."
+    },
+    {
+      "name": "LIVE Support Assistant",
+      "note": "Deterministic confidence gate; escalates instead of guessing. 105 tests."
+    },
+    {
+      "name": "Signoff",
+      "note": "Audit evidence for 'how AI touched our customers'; 140 tests, 100% offline."
+    },
+    {
+      "name": "CompliProof",
+      "note": "CSV reconciliation with hash-chained audit; seven P0 blocks left open on purpose."
+    },
+    {
+      "name": "Study-Studio",
+      "note": "Local-first bilingual audio and quizzes; 986 tests."
+    },
+    {
+      "name": "SigmaHelix-OS",
+      "note": "The hub: OS-keyring secrets, shell=False launchers, SHA-256 chain. 385 tests."
+    },
+    {
+      "name": "n8n Production Starter",
+      "note": "Self-hosted automation on Ubuntu 26.04: 88% complete, live on 127.0.0.1:5678, backup/restore verified, blocked on Cloudflare Access, Trivy and host reinstall — not client-ready."
+    },
+    {
+      "name": "German v5",
+      "note": "Local listening app: 12 hand-authored lessons A1–C2 rendered with six VoiceStudio profiles; M10 scale and M11 release deliberately deferred."
+    }
+  ],
+  "adhd": {
+    "present": [
+      "One focus card: exactly one next action is highlighted; the rest wait in the list.",
+      "Prayer-window chunks of 10–25 minutes, never a long open-ended block.",
+      "Done, Skip, Undo and Add are one click; a blocked day check cannot be ticked early.",
+      "Colour-coded sections, large targets, keyboard shortcuts and a reduced-motion setting.",
+      "Dark theme by default, with a readable light alternative and a focus mode that hides the chrome.",
+      "A calm / balanced / vivid intensity switch so colour helps without overwhelming.",
+      "A visible body-double timer with 10/15/25-minute blocks and a quiet reset.",
+      "A three-box Maghrib shutdown ritual that refuses to close a half-done day.",
+      "Per-task energy labels (low / medium / high) so the plan matches your actual state."
+    ],
+    "could_add": [
+      "An intensity switch: calm / balanced / vivid, so colour helps without overwhelming.",
+      "A visible 'body double' timer and a short shutdown ritual at Maghrib."
+    ]
+  },
+  "metacognition": {
+    "is_it_all_inclusive": "The six gaps I named are now built, not promised. Quiz answers feed the next lesson choice, missed glossary terms return on a 1/3/7/14/30-day ladder, a competence map plots recorded lessons by domain and month, each lesson carries a local source note, the week closes with a written review, and approved decisions are logged. What remains is evidence: these loops need real quiz attempts and recorded answers from you before they can show meaningful growth. The system is all inclusive in shape; it is still empty of your history. The German listening app and the n8n platform are now in the matrix too: German as a day task with its own glossary, n8n as a candidate entry with its live local service. The five gaps I named are now addressed: a signal meter shows the honest low-data state, a two-line retrieval unlocks each answer, history exports and imports as plain JSON, weekly reviews roll into a monthly trend, and lessons have local voice narration. The first gap still needs your real effort — I can show it, not manufacture it.",
+    "does_it_keep_me_here": "Much more of the loop now lives in the app: lessons, local source notes, glossary drilling, quiz capture, weekly review and the decision log. Web search is still an explicit handoff because I will not pretend to have read a page. The remaining reason to leave is depth of primary sources — the local notes point at the source but do not replace reading it.",
+    "better_lessons": "Two of the three changes are in: every served lesson now carries a local source note with a verify-at link, and quiz answers are captured from the existing buttons to drive the next lesson. The third is still open: a forced two-line retrieval prompt before the written answer. Add it when you want recall to beat re-reading. Each answer form now starts with a two-line retrieval from memory before the task is revealed, and each lesson has local speech narration.",
+    "your_history_direction": "Your review history keeps pulling toward the same seam: you already operate fail-closed by instinct, and the gap is vocabulary and design justification. So the next lessons should keep mapping new software concepts onto ops instincts you already have — gates, event sourcing, RAG confidence, deny-by-default — and ask you to defend the design in one sentence, not to memorise definitions.",
+    "tools_for_education_career": "For learning: 24 lessons across four domains, a 12-term glossary, written-answer records, a day streak and this memory. For career: the 20-entry matrix that ties each operational problem to a real project and its verified evidence, plus the portfolio PDFs. Enough to practise and to prove. Not enough to show growth over time — there is no competence map yet that says 'you were here in January, you can now defend this in May'.",
+    "architecture_fit": "The design still holds the line that matters: it refuses to invent a status a file does not contain, the day check cannot be ticked with open tasks, source notes are labelled as curated rather than verbatim, and the app says plainly when something is an empty gap. The metacognitive memory is that discipline turned inward — it now reports the six systems as built and keeps naming the remaining emptiness. Nothing is recorded as decided until you approve it.",
+    "what_is_missing": [
+      "Real effort — the signal meter in the control room now shows exactly how much evidence exists, but only your quiz answers and written records can fill it.",
+      "Nothing structural is open: retrieval is forced, history is portable, weekly reviews roll into a month, and lessons speak locally.",
+      "The next honest step is to use the loop: answer quizzes, write answers, close a week, and watch the competence map move."
+    ]
+  },
+  "recommendations": [
+    {
+      "id": "adaptive-lessons",
+      "title": "Let quiz results pick the next lesson",
+      "why": "Calendar-ordered lessons ignore what you missed. A wrong answer should schedule the concept again, sooner.",
+      "next": "Store quiz results per lesson, then have the engine choose the weakest unrecorded concept for tomorrow's focus task.",
+      "status": "implemented 2026-11-19"
+    },
+    {
+      "id": "source-excerpts",
+      "title": "Put one primary-source excerpt in every lesson",
+      "why": "You value evidence over assertion. A short quoted passage makes each claim checkable offline.",
+      "next": "Add a 'Source excerpt' block to each lesson from RESOURCES.md, with the citation kept intact.",
+      "status": "implemented 2026-11-19"
+    },
+    {
+      "id": "competence-map",
+      "title": "Draw a career-competence map",
+      "why": "You have the projects and the lessons; what is missing is the line that shows movement over time.",
+      "next": "Link each lesson to one matrix row and one project, then show a per-domain progress line in the control room.",
+      "status": "implemented 2026-11-19"
+    },
+    {
+      "id": "spaced-glossary",
+      "title": "Space the glossary terms you miss",
+      "why": "One glossary drill a day is flat repetition. Terms you get wrong should come back on a widening interval.",
+      "next": "Record term drills with a confidence grade and schedule the weak ones at 1, 3 and 7 days.",
+      "status": "implemented 2026-11-19"
+    },
+    {
+      "id": "weekly-review",
+      "title": "Add a Friday shutdown review",
+      "why": "The day engine opens tasks but never closes the week, so wins and gaps are never consolidated.",
+      "next": "A five-minute review that lists what was recorded, what stayed open, and one next week's focus.",
+      "status": "implemented 2026-11-19"
+    },
+    {
+      "id": "retrieval-prompt",
+      "title": "Force a two-line retrieval prompt before the answer",
+      "why": "Recall before writing beats re-reading the lesson and copying a phrase.",
+      "next": "Add a short 'write what you remember before looking' field to the answer form."
+    },
+    {
+      "id": "portable-history",
+      "title": "Export and import your learning history",
+      "why": "Quiz attempts, term grades and decisions currently live on one machine; a career map needs a history that survives it.",
+      "next": "Add a single JSON export of learning-records/ and an import that validates before writing."
+    }
+  ],
+  "searchHint": "Web search is a handoff: I open your browser's search results for the exact words you ask about, and you decide what to trust. I do not pretend to have read the page."
+}

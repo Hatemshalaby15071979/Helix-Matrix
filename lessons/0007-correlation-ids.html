@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Lesson 0007 — Correlation IDs</title><link rel="stylesheet" href="/assets/css/base.css"></head><body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Lesson 0007 — Correlation IDs</h1>
+<p class="ref">Primary source: <a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a>.</p>
+<h2>Why this lesson</h2>
+<p>When a request crosses services (API → gate → engine → audit), a single identifier ties the whole journey together. Without it, "why did this fail?" becomes a grep across five logs.</p>
+<h2>Concept</h2>
+<ul>
+  <li><b>Correlation ID:</b> a unique id generated at the edge and propagated through every hop.</li>
+  <li><b>Propagation:</b> passed in a header (<code>X-Correlation-ID</code> / W3C <code>traceparent</code>) and logged at each service.</li>
+  <li><b>One id, many logs:</b> grep the id → the entire request's story across services.</li>
+  <li><b>Per-tenant scoping:</b> combine with tenant id for safe, isolated tracing.</li>
+</ul>
+<p class="note">Helix attaches per-request correlation IDs in its tenant-isolated async ingest layer; CompliProof's hash-chained audit trail uses them to link a reconciliation to its evidence.</p>
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Correlation-ID pattern</th></tr>
+<tr><td style="padding:.3rem">A ticket number follows a case across teams</td><td style="padding:.3rem">One id follows a request across services</td></tr>
+<tr><td style="padding:.3rem">"Which agent touched this account?"</td><td style="padding:.3rem">"Which service touched this request?"</td></tr>
+<tr><td style="padding:.3rem">Cross-referencing a call ID in Zendesk + Salesforce</td><td style="padding:.3rem">Cross-referencing a correlation id in API + gate + engine logs</td></tr>
+</table>
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <p class="q">1. Where should the correlation ID be generated?</p>
+  <button onclick="ans('q1',1,false)">A) In the deepest service</button>
+  <button onclick="ans('q1',1,true)">B) At the edge (first service to receive the request)</button>
+  <button onclick="ans('q1',1,false)">C) In the database</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. If a service does not propagate the id, what happens?</p>
+  <button onclick="ans('q2',2,true)">A) The trace breaks; that hop becomes invisible</button>
+  <button onclick="ans('q2',2,false)">B) The id is regenerated downstream</button>
+  <button onclick="ans('q2',2,false)">C) Nothing — logs still work</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. Best practice for the id format?</p>
+  <button onclick="ans('q3',3,false)">A) Sequential integers</button>
+  <button onclick="ans('q3',3,true)">B) Globally unique (UUID) to avoid collisions across tenants/hosts</button>
+  <button onclick="ans('q3',3,false)">C) The user's email</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+<script>function ans(q,n,c){const f=document.getElementById(q+'f');f.innerHTML=c?'<span class="correct">Correct.</span>':'<span class="wrong">Not quite — re-read above.</span>';}</script>
+<h2>Primary source</h2>
+<p><a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a>. Helix <code>engine_bridge.py</code> / correlation-id handling.</p>
+<h2>Homework (5 min)</h2>
+<p>Find one cross-service call in your codebase. Check whether a correlation id is generated at the edge and propagated. If not, note where it breaks.</p>
+<footer>Lesson 0007 · <a href="../MISSION.md">Mission</a> · Next: 0008 dead letter queue.</footer>
+</body></html>

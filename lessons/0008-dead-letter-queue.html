@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Lesson 0008 — Dead letter queue</title><link rel="stylesheet" href="/assets/css/base.css"></head><body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Lesson 0008 — Dead letter queue (DLQ)</h1>
+<p class="ref">Primary source: <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html">Enterprise Integration Patterns — Dead Letter Channel</a>.</p>
+<h2>Why this lesson</h2>
+<p>When a message or submission cannot be processed (bad schema, failed gate, unknown role), you have two bad options: drop it (data loss) or retry forever (poison pill). A dead letter queue is the third option: park it, record why, and let a human decide.</p>
+<h2>Concept</h2>
+<ul>
+  <li><b>DLQ:</b> a separate queue/channel where unprocessable messages land.</li>
+  <li><b>Reason recorded:</b> why it failed (validation error, gate verdict, timeout) — not just "failed".</li>
+  <li><b>Human triage:</b> DLQs are worked by operators, not auto-retried blindly.</li>
+  <li><b>Retry policy:</b> limited retries with backoff before DLQ; never infinite.</li>
+</ul>
+<p class="note">Helix's gate returns <code>dead_letter</code> for unprocessable submissions (unknown role, forbidden classification, non-owned engine, oversight-only seat) — the submission is held and recorded, never executed, never silently dropped.</p>
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">DLQ pattern</th></tr>
+<tr><td style="padding:.3rem">Unprocessable ticket parked for QA review</td><td style="padding:.3rem">Message in DLQ with reason code</td></tr>
+<tr><td style="padding:.3rem">Agent's bad call routed to coaching, not auto-closed</td><td style="padding:.3rem">Failed submission held, not retried forever</td></tr>
+<tr><td style="padding:.3rem">ICU/APU as the "held" path for low performers</td><td style="padding:.3rem">DLQ as the held path for unprocessable work</td></tr>
+</table>
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <p class="q">1. A message fails validation 3 times. Best next step?</p>
+  <button onclick="ans('q1',1,false)">A) Retry forever</button>
+  <button onclick="ans('q1',1,true)">B) Move to DLQ with the failure reason, alert an operator</button>
+  <button onclick="ans('q1',1,false)">C) Silently drop it</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. What must a DLQ entry contain?</p>
+  <button onclick="ans('q2',2,false)">A) Just the payload</button>
+  <button onclick="ans('q2',2,true)">B) Payload + failure reason + timestamp + correlation id</button>
+  <button onclick="ans('q2',2,false)">C) The original sender's email</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. Infinite retry on a poison message causes…</p>
+  <button onclick="ans('q3',3,false)">A) Nothing — it eventually succeeds</button>
+  <button onclick="ans('q3',3,true)">B) Head-of-line blocking, resource exhaustion, masked root cause</button>
+  <button onclick="ans('q3',3,false)">C) Faster processing</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+<script>function ans(q,n,c){const f=document.getElementById(q+'f');f.innerHTML=c?'<span class="correct">Correct.</span>':'<span class="wrong">Not quite — re-read above.</span>';}</script>
+<h2>Primary source</h2>
+<p><a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/DeadLetterChannel.html">EIP — Dead Letter Channel</a>. Helix <code>control_plane/governance.py</code> (dead_letter verdict).</p>
+<h2>Homework (5 min)</h2>
+<p>Find one place in your code where a failure is silently swallowed (empty catch, ignored return). Write what a DLQ entry for it would contain.</p>
+<footer>Lesson 0008 · <a href="../MISSION.md">Mission</a> · Next: 0009 RAG confidence gate.</footer>
+</body></html>

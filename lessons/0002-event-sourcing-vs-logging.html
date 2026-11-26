@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Lesson 0002 — Event sourcing vs logging</title><link rel="stylesheet" href="/assets/css/base.css"></head>
+<body>
+<!-- Helix Solutions — canonical master brand (applied to every GitHub README and HTML) -->
+<div class="hs-brand-bar" style="display:flex;align-items:center;gap:.6rem;padding:.4rem .9rem;background:#060607;color:#F5F1E6;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #1d2b28">
+  <svg viewBox="0 0 256 256" width="20" height="20" role="img" aria-label="Helix Solutions" style="display:block">
+    <defs><linearGradient id="hsBarGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7cffb2"/><stop offset="50%" stop-color="#5ce1ff"/><stop offset="100%" stop-color="#ffb347"/></linearGradient></defs>
+    <path d="M32 48h48l-16 160h16l16-48h32l16 48h16l-16-64h16l16 16h16l-32-96h32l16 48h16l-16-64h64l32 160h-16l-32-96h-32l-16 48h-16l32-96 16 48h48l16-64 16 48h16l-32-96h48l32 160h-16v-16h16l16-48h16l-32 96 16 64h-16l-32-96h-64l-16 48h-16l32-96-16 48h-48l-16 96v-48h16l16-96h16l-32 48 16 48h-16l-32-96-16 48h-48v-48h16l16-48h16l-32 96 16 48h-16l-32-96-16 48h48v-48z" fill="url(#hsBarGrad)"/>
+  </svg>
+  <span>Helix Solutions</span>
+  <a href="https://github.com/Hatemshalaby15071979" target="_blank" rel="noopener" style="margin-left:auto;color:#5ce1ff;text-decoration:none">GitHub portfolio &#8599;</a>
+</div>
+
+<h1>Lesson 0002 — Event sourcing vs. "just log it"</h1>
+<p class="ref">Primary source: <a href="https://martinfowler.com/eaaDev/EventSourcing.html">Martin Fowler — Event Sourcing</a>.</p>
+
+<h2>Why this lesson</h2>
+<p>In ops you keep audit trails: who changed a schedule, when, why. "Just log it" captures the <i>fact</i> of change but loses the <i>intent</i> and the <i>sequence</i>. Event sourcing treats every state change as an immutable event; current state is a <b>projection</b> of the event stream. The audit trail becomes the source of truth, not a side-effect.</p>
+
+<h2>Concept</h2>
+<ul>
+  <li><b>Event:</b> an immutable record of something that happened ("ShiftAssigned", "KPIThresholdBreached"). Past tense, factual, never edited.</li>
+  <li><b>State:</b> derived by replaying events in order. Delete the database and you can rebuild state from the log.</li>
+  <li><b>Projection:</b> a read-optimised view (e.g. "current schedule") computed from events. Multiple projections from one stream.</li>
+  <li><b>Snapshot:</b> a cached projection to avoid replaying from zero on large streams.</li>
+</ul>
+<p class="note">Contrast with CRUD: in CRUD you overwrite state and the "why" is gone. In event sourcing the "why" is the data.</p>
+
+<h2>Mapping to your ops world</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0">
+<tr><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Ops reality</th><th style="text-align:left;border-bottom:1px solid #d9d9d9;padding:.3rem">Event-sourcing pattern</th></tr>
+<tr><td style="padding:.3rem">Schedule change log (who/when)</td><td style="padding:.3rem">Event stream "ShiftAssigned" with actor + timestamp</td></tr>
+<tr><td style="padding:.3rem">Re-running a KPI report for last month</td><td style="padding:.3rem">Replay events up to date X → projection at that date</td></tr>
+<tr><td style="padding:.3rem">"What did the forecast say on Tuesday?"</td><td style="padding:.3rem">Temporal query on the event stream</td></tr>
+<tr><td style="padding:.3rem">A bad edit you can't undo cleanly</td><td style="padding:.3rem">Append a compensating event; history stays honest</td></tr>
+</table>
+
+<h2>Helix's implementation</h2>
+<p>Helix keeps an append-only, hash-chained <code>audit_events</code> ledger: every governance decision is written before it runs. Combined with event-sourced memory, any action is replayable and inspectable — the "evidence before claims" principle in code.</p>
+
+<h2>Check yourself</h2>
+<div class="quiz" id="q1">
+  <p class="q">1. In event sourcing, what is the source of truth?</p>
+  <button onclick="ans('q1',1,false)">A) The latest row in the state table</button>
+  <button onclick="ans('q1',1,true)">B) The immutable event stream</button>
+  <button onclick="ans('q1',1,false)">C) The most recent snapshot</button>
+  <div class="feedback" id="q1f"></div>
+</div>
+<div class="quiz" id="q2">
+  <p class="q">2. A schedule was wrongly changed. In event sourcing you…</p>
+  <button onclick="ans('q2',2,false)">A) Edit the original event to fix it</button>
+  <button onclick="ans('q2',2,true)">B) Append a compensating event; history stays intact</button>
+  <button onclick="ans('q2',2,false)">C) Delete the audit row and re-insert</button>
+  <div class="feedback" id="q2f"></div>
+</div>
+<div class="quiz" id="q3">
+  <p class="q">3. Why replay events instead of re-query a state table?</p>
+  <button onclick="ans('q3',3,false)">A) It is faster</button>
+  <button onclick="ans('q3',3,true)">B) It lets you answer "what did we know at time T" and rebuild after corruption</button>
+  <button onclick="ans('q3',3,false)">C) It avoids indexes</button>
+  <div class="feedback" id="q3f"></div>
+</div>
+<script>function ans(q,n,c){const f=document.getElementById(q+'f');f.innerHTML=c?'<span class="correct">Correct.</span>':'<span class="wrong">Not quite — re-read above.</span>';}</script>
+
+<h2>Primary source</h2>
+<p><a href="https://martinfowler.com/eaaDev/EventSourcing.html">Martin Fowler — Event Sourcing</a> (canonical). Then read Helix's <code>control_plane/engine.py</code> workflow state machine.</p>
+
+<h2>Homework (5 min)</h2>
+<p>Take one ops process you audit (e.g. schedule changes). List the events it produces and the projection you'd build from them. Note one question a replay could answer that your current log cannot.</p>
+
+<footer>Lesson 0002 · <a href="../MISSION.md">Mission</a> · <a href="../reference/glossary.html">Glossary</a> · Next: 0003 RBAC deny-by-default.</footer>
+</body></html>
