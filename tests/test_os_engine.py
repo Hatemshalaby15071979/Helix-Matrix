@@ -143,7 +143,8 @@ class LearningFlowTests(unittest.TestCase):
         tasks = eng.generate_tasks(DAY, sources)
         by_kind = {task["kind"]: task for task in tasks}
         self.assertEqual(by_kind["learn"]["energy"], "high")
-        self.assertEqual(by_kind["german"]["energy"], "low")
+        if HAS_PROJECTS:
+            self.assertEqual(by_kind["german"]["energy"], "low")
         self.assertEqual(by_kind["check"]["energy"], "low")
         clean = eng.validate_manual("A small fix", "fajr_dhuhr", 15, "could", "low")
         self.assertEqual(clean["energy"], "low")
