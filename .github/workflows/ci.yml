@@ -43,9 +43,7 @@ jobs:
 
       - name: Confirm version strings agree
         run: |
-          VERSION="$(tr -d '[:space:]' < VERSION)"
-          # The server header carries the major.minor version (e.g. "1.0" from "1.0.0").
-          SHORT="${VERSION%.*}"
-          grep -q "HelixMatrix/\${SHORT}" server/os_server.py \
-            || { echo "Server header version does not match VERSION ($VERSION)"; exit 1; }
-          echo "version consistent: $SHORT (from $VERSION)"
+          SHORT="$(tr -d '[:space:]' < VERSION | cut -d. -f1-2)"
+          grep -q "HelixMatrix/${SHORT}" server/os_server.py || {
+            echo "FAIL: server header does not contain HelixMatrix/${SHORT}"; exit 1; }
+          echo "version consistent: ${SHORT}"
