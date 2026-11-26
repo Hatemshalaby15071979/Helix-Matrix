@@ -19,6 +19,9 @@ import os_engine as eng  # noqa: E402
 
 READMES = ROOT
 REMOTE = eng.resolve_projects(ROOT)
+# When the app is checked out without the owner's project clones (e.g. on a CI
+# runner), the engine still works — project-dependent facts are skipped there.
+HAS_PROJECTS = REMOTE.is_dir()
 DAY = date(2026, 11, 19)
 # Public Egyptian Survey table for Cairo on this date (Aladhan method 5).
 ALADHAN = {
@@ -55,6 +58,9 @@ class SourceTests(unittest.TestCase):
         sources = eng.read_sources(READMES, REMOTE)
         self.assertGreaterEqual(len(sources["terms"]), 10)
         self.assertEqual(len(sources["lessons"]), 24)
+        if not HAS_PROJECTS:
+            self.assertEqual(len(sources["projects"]), 0)
+            return
         self.assertGreaterEqual(len(sources["projects"]), 10)
         recorded = [lesson for lesson in sources["lessons"] if lesson["recorded"]]
         self.assertTrue(any(lesson["number"] == "0001" for lesson in recorded))
@@ -74,6 +80,8 @@ class TaskTests(unittest.TestCase):
         core = [task for task in first if task["kind"] not in {"german", "n8n", "review"}]
         self.assertEqual([task["window"] for task in core], [row[0] for row in eng.WINDOWS])
         self.assertTrue(all(task["minutes"] <= 25 for task in first))
+        if not HAS_PROJECTS:
+            return
         german = [task for task in first if task["kind"] == "german"]
         self.assertEqual(len(german), 1)
         self.assertTrue(german[0]["links"]["german"])
@@ -143,6 +151,8 @@ class LearningFlowTests(unittest.TestCase):
             eng.validate_manual("A small fix", "fajr_dhuhr", 15, "could", "extreme")
 
     def test_german_pilot_lessons_are_read(self):
+        if not HAS_PROJECTS:
+            self.skipTest("project clones not present in this checkout")
         german = eng.read_german(REMOTE)
         self.assertTrue(german["available"])
         self.assertEqual(len(german["lessons"]), 12)
@@ -286,6 +296,12 @@ class GapClosureTests(unittest.TestCase):
         follows the evidence instead of a hard-coded folder: with a status file
         the task quotes it, without one it names the gap and links the note.
         """
+        if not HAS_PROJECTS:
+            tasks = eng.generate_tasks(DAY, self.sources)
+            project = next(task for task in tasks if task["kind"] == "project")
+            self.assertIn("No project clones found", project["title"])
+            self.assertIn("gap stays visible", project["detail"].lower())
+            return
         tasks = eng.generate_tasks(DAY, self.sources)
         project = next(task for task in tasks if task["kind"] == "project")
         self.assertTrue(project["links"]["note"])

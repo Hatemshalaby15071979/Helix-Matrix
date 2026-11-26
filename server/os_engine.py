@@ -752,12 +752,56 @@ def generate_tasks(day: date, sources: dict) -> list[dict]:
     german_lesson = german.get("lessons", [])
     term = choose_term(day, sources)
     projects = sources["projects"]
-    project = projects[day.toordinal() % len(projects)]
-    status_bit = (
-        project["status_line"]
-        if project["status_line"]
-        else "No SHIPMENT_READINESS.md or STATUS.md. The gap stays visible."
-    )
+    if projects:
+        project = projects[day.toordinal() % len(projects)]
+        status_bit = (
+            project["status_line"]
+            if project["status_line"]
+            else "No SHIPMENT_READINESS.md or STATUS.md. The gap stays visible."
+        )
+        project_task = _task(
+            day,
+            kind="project",
+                energy="medium",
+            window="asr_maghrib",
+            minutes=20,
+            title=(
+                f"{project['folder']}: copy the status line into today's note."
+                if project["status_file"]
+                else f"{project['folder']}: no status file exists — record the gap in today's note, do not invent a status."
+            ),
+            source=f"remotely-active/{project['folder']}",
+            detail=(
+                f"{project['status_file']}: {status_bit}"
+                if project["status_file"]
+                else f"No {STATUS_NAMES[0]} or {STATUS_NAMES[1]} in remotely-active/{project['folder']}. The gap stays visible."
+            ),
+            links={
+                "lesson": None,
+                "project": project["folder"],
+                "matrix_id": project["matrix_id"],
+                "term": term["term"],
+                "note": day.isoformat(),
+            },
+        )
+    else:
+        project_task = _task(
+            day,
+            kind="project",
+                energy="medium",
+            window="asr_maghrib",
+            minutes=20,
+            title="No project clones found — point HELIX_MATRIX_PROJECTS at your remotely-active folder, then record the gap in today's note.",
+            source="remotely-active (not found)",
+            detail="The day OS reads live status files from the project clones; with none present, the gap stays visible instead of inventing a status.",
+            links={
+                "lesson": None,
+                "project": None,
+                "matrix_id": None,
+                "term": term["term"],
+                "note": day.isoformat(),
+            },
+        )
     return [
         _task(
             day,
@@ -827,31 +871,7 @@ def generate_tasks(day: date, sources: dict) -> list[dict]:
             )
             for item in review_lessons(sources)[:1]
         ],
-        _task(
-            day,
-            kind="project",
-                energy="medium",
-            window="asr_maghrib",
-            minutes=20,
-            title=(
-                f"{project['folder']}: copy the status line into today's note."
-                if project["status_file"]
-                else f"{project['folder']}: no status file exists — record the gap in today's note, do not invent a status."
-            ),
-            source=f"remotely-active/{project['folder']}",
-            detail=(
-                f"{project['status_file']}: {status_bit}"
-                if project["status_file"]
-                else f"No {STATUS_NAMES[0]} or {STATUS_NAMES[1]} in remotely-active/{project['folder']}. The gap stays visible."
-            ),
-            links={
-                "lesson": None,
-                "project": project["folder"],
-                "matrix_id": project["matrix_id"],
-                "term": term["term"],
-                "note": day.isoformat(),
-            },
-        ),
+        project_task,
         _task(
             day,
             kind="check",
@@ -1141,10 +1161,11 @@ def clock_in(moment: datetime) -> str:
 
 def read_sources(readmes: Path, remote: Path) -> dict:
     records = readmes / "learning-records"
+    projects = scan_projects(remote) if remote.is_dir() else []
     return {
         "terms": parse_glossary(readmes / "reference" / "glossary.html"),
         "lessons": parse_lessons(readmes / "lessons" / "INDEX.md", records),
-        "projects": scan_projects(remote),
+        "projects": projects,
         "quiz": quiz_results(records),
         "term_grades": term_grades(records),
         "german": read_german(remote),
