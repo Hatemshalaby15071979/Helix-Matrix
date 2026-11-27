@@ -102,3 +102,45 @@ archive reports while the root set still looked satisfied.
 
 Sensitive: `git push origin main` (owner's instruction in chat, 2026-11-27). No force push,
 no PR or issue writes, no secrets.
+
+## 2026-11-27 05:06 EET — sami (Claude), portfolio governance subagent
+STATUS: SIGN-OUT (landing complete)
+
+Task: Mirror Assay's root-document assertion (approved by the owner 2026-11-27) into
+Helix-Matrix, then fix what it found. Done.
+
+Touched: `scripts/check_root_docs.py` (new — byte-identical to the copy landed in Assay,
+createlee, Helix-Codex and Helix-Solutions); `LICENSE` (new, MIT, byte-identical to
+Assay's); `SECURITY.md` (new); `scripts/verify.sh` (new "root-document hygiene" step);
+`.github/workflows/ci.yml` (same step, so local and CI agree); `AGENTS.md` (this entry and
+the sign-in above). No file moved, renamed or deleted.
+
+Why: GOVERNANCE.md section 2 says "No stray `.md`/`.txt` at the root", but nothing asserted
+the *absence* direction — only that the known documents were present, which is how the
+2026-11-26 pass could archive reports while the root set still looked satisfied. The gate
+now asserts both directions: every root document the section 2 table names exists, and
+nothing unlisted sits beside them. The allowed set is parsed out of GOVERNANCE.md, so the
+policy keeps one source of truth.
+
+The gate found two real gaps, both now closed. The section 2 table lists `LICENSE` and
+`SECURITY.md`; neither existed, and `README.md` has linked to `LICENSE` since the house
+README landed — that link was broken on GitHub until this landing. `LICENSE` is the MIT
+text the repository already declares in README.md and in the GOVERNANCE.md section 1 repo
+map, so nothing new is being asserted here. `SECURITY.md` states the posture, the threat
+model (including that `HELIX_MATRIX_HOST` can widen the loopback default and that the
+server is unauthenticated by design), the containment guards on `/file/`, `/project/` and
+the static handler, and the honest non-goals.
+
+Verification: `bash scripts/verify.sh` → ALL CHECKS PASSED: 27 tests passed, 1 skipped;
+byte-compile, JS syntax, JSON and version-consistency all green; and the new step prints
+"check_root_docs: OK -- Helix-Matrix/ holds only the GOVERNANCE.md section 2 set" followed
+by "check_root_docs: self-test OK -- 7/7 cases behaved" (a planted `STRAY-NOTE.md` and a
+planted `NOTES.txt` each stop the gate; a missing required document stops it;
+`requirements.txt` at the root is acknowledged as a non-document; a stray under `docs/` is
+ignored; an unparsable section 2 fails closed). CI on the pushed commits is the record of
+the same steps on a clean runner.
+
+Left undone: nothing failing.
+
+Sensitive: plain `git push origin main` (owner's instruction in chat, 2026-11-27); no force
+push, no PR/issue writes, no secrets.
