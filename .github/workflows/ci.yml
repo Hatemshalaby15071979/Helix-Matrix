@@ -41,6 +41,16 @@ jobs:
               print(f"ok: {p}")
           PY
 
+      # GOVERNANCE.md section 2, asserted in both directions: every root document the
+      # table names is present, and no unlisted .md/.txt sits at the root. A one-way
+      # check cannot enforce a "nothing else at the root" rule — that is how the
+      # 2026-11-26 pass could archive reports while the root set still looked
+      # satisfied. The self-test proves the gate fails closed.
+      - name: Root-document hygiene (GOVERNANCE.md section 2)
+        run: |
+          python3 scripts/check_root_docs.py
+          python3 scripts/check_root_docs.py --self-test
+
       - name: Confirm version strings agree
         run: |
           SHORT="$(tr -d '[:space:]' < VERSION | cut -d. -f1-2)"

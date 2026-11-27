@@ -23,6 +23,10 @@ for p in sorted(pathlib.Path("data").glob("*.json")):
     print(f"ok: {p}")
 PY
 
+echo "==> root-document hygiene (GOVERNANCE.md section 2)"
+python3 scripts/check_root_docs.py
+python3 scripts/check_root_docs.py --self-test
+
 echo "==> confirm version strings agree"
 VERSION="$(tr -d '[:space:]' < VERSION)"
 # The server header carries the major.minor version (e.g. "1.0" from "1.0.0").
