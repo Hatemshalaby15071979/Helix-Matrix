@@ -82,3 +82,23 @@ push to origin main.
 Left undone: nothing.
 Sensitive: plain `git push origin main` (explicitly authorised by the owner's
 "Push all repos now" instruction); no force push, no PR/issue writes.
+
+## 2026-11-27 04:58 EET — sami (Claude), portfolio governance subagent
+STATUS: SIGN-IN
+
+Task: Mirror the root-document assertion the owner approved in Assay on 2026-11-27
+(`scripts/check-scaffold.py`) across the governance repositories, then fix what it finds.
+Sign in before any write to Helix-Matrix.
+
+Touched (planned): `scripts/check_root_docs.py` (new); `LICENSE` (new — the GOVERNANCE.md
+section 2 table lists it, README.md already links to it, and the link is currently broken);
+`SECURITY.md` (new — same table); `scripts/verify.sh` and `.github/workflows/ci.yml` (the
+gate runs in both, so local and CI agree); `AGENTS.md` (this entry and the sign-out).
+
+Why: GOVERNANCE.md section 2 says "No stray `.md`/`.txt` at the root", but nothing asserted
+the *absence* direction — only that the known documents were present. A one-way check
+cannot enforce a "nothing else at the root" rule, which is how the 2026-11-26 pass could
+archive reports while the root set still looked satisfied.
+
+Sensitive: `git push origin main` (owner's instruction in chat, 2026-11-27). No force push,
+no PR or issue writes, no secrets.
